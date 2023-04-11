@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { View, Text, TextInput, Button, FlatList, Image } from 'react-native';
+import { View, Text, TextInput, Button, FlatList, Image, StyleSheet, TouchableOpacity } from 'react-native';
 //import store from './Store/messages';
 
 const ChatScreen = () => {
@@ -42,32 +42,84 @@ const ChatScreen = () => {
 
     sendToServer();
   };
-
+  //TODO use styles
   return (
-    <View style={{ flex: 1 }}>
+    <View style={styles.container}>
       <FlatList
         data={messages}
         renderItem={({ item }) => (
-          <View style={{ backgroundColor: item.me ? '#ccc' : '#eee', padding: 10, margin: 5 }}>
+          <View style={{ backgroundColor: item.me ? '#688BAB' : '#DAE8F4', padding: 10, margin: 5}}> 
             { item.image ? <Image source={{ uri: item.image }} style={{ width: 200, height: 200 }} /> : null }
             { item.text ?
-              <Text style={{ fontWeight: 'bold', color: item.me ? '#333' : '#000' }}>{item.text}</Text> : null
+              <Text style={{ fontWeight: 'bold', color: item.me ? 'black' : '#000' }}>{item.text}</Text> : null
             }
           </View>
         )}
         keyExtractor={(item, index) => index.toString()}
       />
-      <View style={{ flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between' }}>
+      <View style={styles.textFieldsInputContainer}>
         <TextInput
-          style={{ flex: 1, margin: 5, borderWidth: 1, borderColor: '#ccc', borderRadius: 10, padding: 10 }}
-          placeholder="Type a message..."
+          style={styles.textFieldsInput}
+          placeholder="Skriv en besked..."
           value={text}
           onChangeText={setText}
         />
-        <Button title="Send" onPress={handleSend} />
+        <TouchableOpacity style={styles.sendButtonStyle} onPress={handleSend}>
+          <Text style={styles.textSettingsButton}>Send</Text>
+        </TouchableOpacity>
       </View>
     </View>
   );
 };
 
+const styles = StyleSheet.create({ //design of the chat screen
+  container: {
+    flex: 1,
+    backgroundColor: 'white',
+    //alignItems: 'center',
+    justifyContent: 'space-between',
+  },
+  sendButtonStyle: { 
+    backgroundColor: '#F9CA7F',
+    padding: 10,
+    borderRadius: 10,
+    //fontWeight: 'bold',
+  },
+  textSettingsButton: {
+    fontWeight: 'bold',
+    fontSize: 16,
+    color: 'black',
+    textAlign: 'center',
+  },
+  textFieldsInputContainer: {
+    backgroundColor: 'white',
+    padding: 10,
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'space-between',
+  },
+  textFieldsInput: {
+    flex: 1, 
+    margin: 5,
+    //borderWidth: 5,
+    //borderColor: '#ccc',
+    //borderRadius: 10,
+    padding: 10,
+    fontWeight: 'bold',
+    fontSize: 16,
+  },
+  inputMessage: {
+    backgroundColor: '#ccc',
+    padding: 10,
+    borderRadius: 10,
+    margin: 5,
+  },
+  outPutMessage: {
+    backgroundColor: '#ccc',
+    padding: 10,
+    borderRadius: 10,
+    margin: 5,
+    flex: 1,
+  },
+})
 export default ChatScreen;
