@@ -4,8 +4,8 @@ import { View, Text, TextInput, Button, FlatList, Image, StyleSheet, TouchableOp
 
 const ChatScreen = () => {
   const [messages, setMessages] = useState([
-    { text: 'Hello', me: false },
-    { text: 'Hi', me: true }
+    { author: "RASA", text: 'Hello', me: false },
+    { author: "User", text: 'Hi', me: true }
   ]);
   
   const [text, setText] = useState('');
@@ -26,10 +26,10 @@ const ChatScreen = () => {
       console.log("RASA sent", res);
 
       const rasaResponse = response.ok ? res.map((item) => {
-        return { text: item.text ? "RASA: " + item.text || "Error" : null, me: false, image: item.image || null };
-      }) : [{ text: "RASA: Error", me: false, image: null }];
+        return { author: "RASA", text: item.text || "", me: false, image: item.image || null };
+      }) : [{ author: "ERROR", text: "RASA: Error", me: false, image: null }];
 
-      setMessages([...messages, { text: "User: " + text, me: true }, ...rasaResponse]);
+      setMessages([...messages, { author: "User", text, me: true }, ...rasaResponse]);
       setText('');
     })
     .catch((error) => {
@@ -38,17 +38,40 @@ const ChatScreen = () => {
   };
 
   const handleSend = () => {
-
-
     sendToServer();
   };
+
+  const answers = [
+    "Strongly agree",
+    "Moderately agree",
+    "Neither agree nor disagree",
+    "Moderately disagree",
+    "Strongly disagree"
+  ];
   //TODO use styles
+  
   return (
     <View style={styles.container}>
+      <View style={styles.headerContainer}>
+        <Text style={styles.question}>Question very important????</Text>
+        
+        <FlatList
+        data={answers}
+        style={styles.ratings}
+        renderItem={({ item }) => (
+          <TouchableOpacity style={styles.sendButtonStyle} onPress={handleSend}>
+          <Text style={styles.textSettingsButton}>{item}</Text>
+        </TouchableOpacity>
+        )}
+        keyExtractor={(item, index) => index.toString()}
+      />
+        
+      </View>
       <FlatList
         data={messages}
         renderItem={({ item }) => (
-          <View style={{ backgroundColor: item.me ? '#688BAB' : '#DAE8F4', padding: 10, margin: 5}}> 
+          <View style={item.me ? styles.inputMessage : styles.botMessage}>
+            <Text>{ item.author + 'I am of breaddy nature, daaddy :'}</Text> 
             { item.image ? <Image source={{ uri: item.image }} style={{ width: 200, height: 200 }} /> : null }
             { item.text ?
               <Text style={{ fontWeight: 'bold', color: item.me ? 'black' : '#000' }}>{item.text}</Text> : null
@@ -71,8 +94,24 @@ const ChatScreen = () => {
     </View>
   );
 };
-
+const DEFAULT_PADDING = 10;
+//padding: 10, margin: 5
 const styles = StyleSheet.create({ //design of the chat screen
+  headerContainer: {
+    backgroundColor: '#F7E5C9',
+  },
+  question: {
+    fontSize: 20,
+    padding: DEFAULT_PADDING,
+    fontWeight: 'bold',
+    textAlign: 'left',
+  },
+  ratings: {
+    flexDirection: 'row',
+  },
+  ratingButton: {
+    flex: 1,
+  },
   container: {
     flex: 1,
     backgroundColor: 'white',
@@ -81,7 +120,7 @@ const styles = StyleSheet.create({ //design of the chat screen
   },
   sendButtonStyle: { 
     backgroundColor: '#F9CA7F',
-    padding: 10,
+    padding: DEFAULT_PADDING,
     borderRadius: 10,
     //fontWeight: 'bold',
   },
@@ -93,7 +132,7 @@ const styles = StyleSheet.create({ //design of the chat screen
   },
   textFieldsInputContainer: {
     backgroundColor: 'white',
-    padding: 10,
+    padding: DEFAULT_PADDING,
     flexDirection: 'row',
     alignItems: 'center',
     justifyContent: 'space-between',
@@ -104,22 +143,24 @@ const styles = StyleSheet.create({ //design of the chat screen
     //borderWidth: 5,
     //borderColor: '#ccc',
     //borderRadius: 10,
-    padding: 10,
+    padding: DEFAULT_PADDING,
     fontWeight: 'bold',
     fontSize: 16,
   },
   inputMessage: {
-    backgroundColor: '#ccc',
-    padding: 10,
+    backgroundColor: '#688BAB',
+    padding: DEFAULT_PADDING,
     borderRadius: 10,
     margin: 5,
+    width: '90%',
+    alignSelf: 'flex-end'
   },
-  outPutMessage: {
-    backgroundColor: '#ccc',
-    padding: 10,
+  botMessage: {
+    backgroundColor: '#DAE8F4',
+    padding: DEFAULT_PADDING,
     borderRadius: 10,
     margin: 5,
-    flex: 1,
+    width: '90%',
   },
 })
 export default ChatScreen;
