@@ -1,9 +1,15 @@
 import React, { useState, useEffect } from 'react';
-import { View, Text, TextInput, Button, FlatList, Image, StyleSheet, TouchableOpacity, Animated, Pressable  } from 'react-native';
+import { View, Text, TextInput, Button, FlatList, Image, StyleSheet, TouchableOpacity, Animated, Pressable, Keyboard  } from 'react-native';
 import { QuestionController } from './Question';
 import { Progress } from './ProgressBar';
 
+
+
+
+
 const ChatScreen = () => {
+  const messageRef = React.useRef(null);
+
   const [messages, setMessages] = useState([
     { author: "RASA", text: 'Hello', me: false },
     { author: "User", text: 'Hi', me: true }
@@ -40,10 +46,14 @@ const ChatScreen = () => {
 
   const handleSend = () => {
     sendToServer();
+    if(currentOption !== null) {
+      setProgress(progress + 1);
+      setCurrentOption(false);
+    }
+    if(messageRef.current !== null) {
+      messageRef.current.scrollToEnd({ animated: true });
+    }
   };
-
-  
-
 
   const SSQOLAnswerOptions1 =[
     "Kunne slet ikke",
@@ -60,36 +70,96 @@ const ChatScreen = () => {
     "Delvist uenig",
     "Helt uenig"
   ];
-  
 
-  const progressSetter = 3;
+  const [currentOptionList, setCurrentOptionList] = useState(SSQOLAnswerOptions1);
 
-  const PS = (progressSetter) => {
-
+  const enumerate = (list: string[]) => {
+    const result = [];
+    for (let i = 0; i < list.length; i++) {
+      result.push({
+        id: i,
+        element: list[i]
+      })
+    }
+    return result;
   }
   
+  const [currentOption, setCurrentOption] = useState(null);
+
+  useEffect(() => {
+    if(currentOption !== null) {
+      setText('Q' +progress + " " + SSQOLAnswerOptions1[currentOption]);
+    }
+  }, [currentOption]);
+
+  const [progress, setProgress] = useState(1);
+
+  useEffect(() => {
+    if(progress > 26) {
+      setCurrentOptionList(SSQOLAnswerOptions2);
+    }
+  }, [progress]);
+  
+  const [isPressed, setIsPressed] = useState(false);
+
+  function handleToggle() {
+    setIsPressed(!isPressed);
+  }
+
+
+ useEffect(() => {
+    const keyboardDidShowListener = Keyboard.addListener(
+      'keyboardDidShow',
+      () => {
+        if(messageRef.current !== null) {
+          messageRef.current.scrollToEnd({ animated: true });
+        }
+      }
+    );
+    const keyboardDidHideListener = Keyboard.addListener(
+      'keyboardDidHide',
+      () => {
+        if(messageRef.current !== null) {
+          messageRef.current.scrollToEnd({ animated: true });
+        }
+      }
+    );
+
+    return () => {
+      keyboardDidHideListener.remove();
+      keyboardDidShowListener.remove();
+    };
+  }, []);
 
 
   return (
     <View style={styles.container}>
       <View style={styles.headerContainer}>
-        <QuestionController qIndex={progressSetter}/>
+        <QuestionController qIndex={progress}/>
         <View style={styles.progressContainer}>
-          <Progress step={progressSetter} steps={49} height={10} />
+          <Progress step={progress} steps={49} height={10} />
         </View>
         <FlatList
-        data={SSQOLAnswerOptions1}
+        data={enumerate(currentOptionList)}
         horizontal = {true}
         renderItem={({ item }) => (
-          <TouchableOpacity style={styles.likertButtonStyle} onPress={handleSend}>
-            <Text style={styles.textSettingsLikertButton}>{item}</Text>
+          <TouchableOpacity style={currentOption === item.id ? styles.likertButtonStylePressed : styles.likertButtonStyle} onPress={() => {
+            if(currentOption === item.id) {
+              setCurrentOption(null);
+              setText('');
+            } else {
+              setCurrentOption(item.id);
+            }
+          }
+          }>
+            <Text style={styles.textSettingsLikertButton}>{item.element}</Text>
           </TouchableOpacity>
         )}
         keyExtractor={(item, index) => index.toString()}
       />
-        
       </View>
       <FlatList
+        ref={messageRef}
         data={messages}
         renderItem={({ item }) => (
           <View style={item.me ? styles.inputMessage : styles.botMessage}>
@@ -105,10 +175,11 @@ const ChatScreen = () => {
       <View style={{borderBottomColor: 'blue', borderBottomWidth: 2}}/>
       <View style={styles.textFieldsInputContainer}>
         <TextInput
-          style={styles.textFieldsInput}
+          style={currentOption !== null && currentOption !== false ? styles.readOnlyField : styles.textFieldsInput}
           placeholder="Skriv en besked..."
           value={text}
           onChangeText={setText}
+          readOnly={currentOption !== null && currentOption !== false}
         />
         <TouchableOpacity style={styles.sendButtonStyle} onPress={handleSend}>
           <Text style={styles.textSettingsButton}>Send</Text>
@@ -166,6 +237,19 @@ const styles = StyleSheet.create({ //design of the chat screen
     margin: 2,
     
   },
+  likertButtonStylePressed: { 
+    backgroundColor: 'blue',
+    borderRadius: 10,
+    maxWidth: 78,
+    maxHeight: 100,
+    minWidth: 78,
+    justifyContent: 'flex-start',
+    alignContent: 'center',
+    paddingVertical: 6,
+    paddingHorizontal: 6,
+    margin: 2,
+    
+  },
   textSettingsButton: {
     fontWeight: 'bold',
     fontSize: 16,
@@ -195,6 +279,12 @@ const styles = StyleSheet.create({ //design of the chat screen
     padding: DEFAULT_PADDING,
     fontWeight: 'bold',
     fontSize: 16,
+  },
+  readOnlyField: {
+    backgroundColor: '#F9CA7F',
+    color: 'black',
+    borderRadius: 10,
+    padding: DEFAULT_PADDING,
   },
   inputMessage: {
     backgroundColor: '#688BAB',

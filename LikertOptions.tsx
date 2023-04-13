@@ -2,7 +2,12 @@ import React, { useState, useEffect } from 'react';
 import { View, Text, TextInput, Button, FlatList, Image, StyleSheet, TouchableOpacity, Animated } from 'react-native';
 
 const AnswerOptionsController = (optionToggler) => {
-    const SSQOLAnswerOptions1 =[
+  const [isPressed, setIsPressed] = useState(false);
+
+  function handleToggle() {
+    setIsPressed(!isPressed);
+  }  
+  const SSQOLAnswerOptions1 =[
       "Kunne slet ikke",
       "Meget besvær",
       "En del besvær",
@@ -28,7 +33,7 @@ const AnswerOptionsController = (optionToggler) => {
         data={option}
         horizontal = {true}
         renderItem={({ item }) => (
-            <TouchableOpacity style={styles.likertButtonStyle} onPress={}>
+            <TouchableOpacity style={handleToggle ? styles.likertButtonStylePressed : styles.likertButtonStyle} onPress={handleToggle}>
             <Text style={styles.textSettingsLikertButton}>{item}</Text>
             </TouchableOpacity>
         )}
@@ -56,4 +61,19 @@ const AnswerOptionsController = (optionToggler) => {
         margin: 2,
     
     },
+    likertButtonStylePressed: { 
+      backgroundColor: '#blue',
+      borderRadius: 10,
+      maxWidth: 78,
+      maxHeight: 100,
+      minWidth: 78,
+      justifyContent: 'flex-start',
+      alignContent: 'center',
+      paddingVertical: 6,
+      paddingHorizontal: 6,
+      margin: 2,
+      
+    },
     })
+    export default ChatScreen;
+    
