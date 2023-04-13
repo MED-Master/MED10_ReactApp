@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { View, Text, TextInput, Button, FlatList, Image, StyleSheet, TouchableOpacity, Animated } from 'react-native';
+import { View, Text, TextInput, Button, FlatList, Image, StyleSheet, TouchableOpacity, Animated, Pressable  } from 'react-native';
 import { QuestionController } from './Question';
 import { Progress } from './ProgressBar';
 
@@ -62,11 +62,12 @@ const ChatScreen = () => {
   ];
   
 
-  const progressSetter = 5;
+  const progressSetter = 3;
 
   const PS = (progressSetter) => {
 
   }
+  
 
 
   return (
@@ -85,7 +86,6 @@ const ChatScreen = () => {
           </TouchableOpacity>
         )}
         keyExtractor={(item, index) => index.toString()}
-        
       />
         
       </View>
