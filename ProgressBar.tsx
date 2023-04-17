@@ -40,6 +40,7 @@ export const Progress =({step, steps, height}) => {
           backgroundColor: 'white',
           borderRadius: height,
           overflow: 'hidden',
+          marginBottom: 8,
         }}>
         <Animated.View 
           style={{

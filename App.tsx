@@ -4,15 +4,13 @@ import { QuestionController } from './Question';
 import { Progress } from './ProgressBar';
 
 
-
-
-
 const ChatScreen = () => {
   const messageRef = React.useRef(null);
 
   const [messages, setMessages] = useState([
-    { author: "RASA", text: 'Hello', me: false },
-    { author: "User", text: 'Hi', me: true }
+    { author: "RASA", text: 'Hej mit navn er RASA' , me: false },
+    //{ author: "RASA", text: '.', me: false },
+    //{ author: "User", text: 'Hi', me: true }
   ]);
   
   const [text, setText] = useState('');
@@ -29,14 +27,14 @@ const ChatScreen = () => {
       const res = await response.json()
       const mesyge = response.ok ? res[0].text : "Error";
 
-      console.log("User sent", text);
-      console.log("RASA sent", res);
+      //console.log("User sent", text);
+      //console.log("RASA sent", res);
 
       const rasaResponse = response.ok ? res.map((item) => {
         return { author: "RASA", text: item.text || "", me: false, image: item.image || null };
       }) : [{ author: "ERROR", text: "RASA: Error", me: false, image: null }];
 
-      setMessages([...messages, { author: "User", text, me: true }, ...rasaResponse]);
+      setMessages([...messages, { author: "Bruger", text, me: true }, ...rasaResponse]);
       setText('');
     })
     .catch((error) => {
@@ -44,17 +42,23 @@ const ChatScreen = () => {
     });
   };
 
-  const handleSend = () => {
-    sendToServer();
-    if(currentOption !== null) {
-      setProgress(progress + 1);
-      setCurrentOption(false);
-    }
-    if(messageRef.current !== null) {
-      messageRef.current.scrollToEnd({ animated: true });
-    }
-  };
 
+  const handleSend = () => {
+    if(text.length === 0) {
+      console.log("Text null");
+      return;
+    } else {
+      sendToServer();
+      if(currentOption !== null) {
+        setProgress(progress + 1);
+        setCurrentOption(null);
+      }
+      if(messageRef.current !== null) {
+        messageRef.current?.scrollToEnd({ animated: true });
+      }
+    };
+  };
+  
   const SSQOLAnswerOptions1 =[
     "Kunne slet ikke",
     "Meget besvær",
@@ -106,32 +110,6 @@ const ChatScreen = () => {
     setIsPressed(!isPressed);
   }
 
-
- useEffect(() => {
-    const keyboardDidShowListener = Keyboard.addListener(
-      'keyboardDidShow',
-      () => {
-        if(messageRef.current !== null) {
-          messageRef.current.scrollToEnd({ animated: true });
-        }
-      }
-    );
-    const keyboardDidHideListener = Keyboard.addListener(
-      'keyboardDidHide',
-      () => {
-        if(messageRef.current !== null) {
-          messageRef.current.scrollToEnd({ animated: true });
-        }
-      }
-    );
-
-    return () => {
-      keyboardDidHideListener.remove();
-      keyboardDidShowListener.remove();
-    };
-  }, []);
-
-
   return (
     <View style={styles.container}>
       <View style={styles.headerContainer}>
@@ -171,8 +149,9 @@ const ChatScreen = () => {
           </View>
         )}
         keyExtractor={(item, index) => index.toString()}
+        onContentSizeChange={() => messageRef.current.scrollToEnd({ animated: true })}
       />
-      <View style={{borderBottomColor: 'blue', borderBottomWidth: 2}}/>
+      <View style={{borderBottomColor: 'black', borderBottomWidth: 1}}/>
       <View style={styles.textFieldsInputContainer}>
         <TextInput
           style={currentOption !== null && currentOption !== false ? styles.readOnlyField : styles.textFieldsInput}
@@ -195,6 +174,7 @@ const styles = StyleSheet.create({ //design of the chat screen
     backgroundColor: '#F7E5C9',
     borderBottomEndRadius: 5,
     borderBottomStartRadius: 5,
+    marginBottom: 5,
   },
   question: {
     fontSize: 26,
@@ -211,7 +191,7 @@ const styles = StyleSheet.create({ //design of the chat screen
   },
   container: {
     flex: 1,
-    backgroundColor: 'white',
+    backgroundColor: '#F3F6F9',
     //alignItems: 'center',
     justifyContent: 'space-between',
   },
@@ -230,29 +210,32 @@ const styles = StyleSheet.create({ //design of the chat screen
     maxWidth: 78,
     maxHeight: 100,
     minWidth: 78,
-    justifyContent: 'flex-start',
+    justifyContent: 'center',
     alignContent: 'center',
     paddingVertical: 6,
     paddingHorizontal: 6,
     margin: 2,
+    marginBottom: 10,
+    flex: 1,
     
   },
   likertButtonStylePressed: { 
-    backgroundColor: 'blue',
+    backgroundColor: '#F4B34B',
     borderRadius: 10,
     maxWidth: 78,
     maxHeight: 100,
     minWidth: 78,
-    justifyContent: 'flex-start',
+    justifyContent: 'center',
     alignContent: 'center',
     paddingVertical: 6,
     paddingHorizontal: 6,
     margin: 2,
-    
+    marginBottom: 10,
+    flex: 1,
   },
   textSettingsButton: {
     fontWeight: 'bold',
-    fontSize: 16,
+    fontSize: 22,
     color: 'black',
     textAlign: 'center',
     textAlignVertical: 'center',
@@ -264,7 +247,7 @@ const styles = StyleSheet.create({ //design of the chat screen
     textAlign: 'center',
   },
   textFieldsInputContainer: {
-    backgroundColor: 'white',
+    backgroundColor: '#F3F6F9',
     padding: DEFAULT_PADDING,
     flexDirection: 'row',
     alignItems: 'center',
@@ -281,13 +264,14 @@ const styles = StyleSheet.create({ //design of the chat screen
     fontSize: 16,
   },
   readOnlyField: {
-    backgroundColor: '#F9CA7F',
+    backgroundColor: '#F4B34B',
     color: 'black',
     borderRadius: 10,
     padding: DEFAULT_PADDING,
+    fontWeight: 'bold',
   },
   inputMessage: {
-    backgroundColor: '#688BAB',
+    backgroundColor: '#AAC3DB',
     padding: DEFAULT_PADDING,
     borderRadius: 10,
     margin: 5,
