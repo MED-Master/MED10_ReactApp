@@ -16,19 +16,19 @@ const ChatScreen = () => {
   const [text, setText] = useState('');
   
   const sendToServer = () => {
-    fetch('http://10.0.2.2:5005/webhooks/rest/webhook', {
+    const textToSend = text;
+    setText('');
+    fetch('http://10.0.2.2:6969/api', {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
       },
-      body: JSON.stringify({ message: text }),
+      body: JSON.stringify({ message: textToSend }),
     })
     .then(async (response) => {
+      console.log(response);
       const res = await response.json()
       const mesyge = response.ok ? res[0].text : "Error";
-
-      //console.log("User sent", text);
-      //console.log("RASA sent", res);
 
       const rasaResponse = response.ok ? res.map((item) => {
         return { author: "RASA", text: item.text || "", me: false, image: item.image || null };
@@ -87,7 +87,8 @@ const ChatScreen = () => {
     }
     return result;
   }
-  
+
+ 
   const [currentOption, setCurrentOption] = useState(null);
 
   useEffect(() => {
