@@ -93,11 +93,11 @@ const ChatScreen = () => {
 
   useEffect(() => {
     if(currentOption !== null) {
-      setText('Q' +progress + " " + SSQOLAnswerOptions1[currentOption]);
+      setText('Sporgsmål ' +progress + " - " + currentOptionList[currentOption]);
     }
   }, [currentOption]);
 
-  const [progress, setProgress] = useState(1);
+  const [progress, setProgress] = useState(24);
 
   useEffect(() => {
     if(progress > 26) {
