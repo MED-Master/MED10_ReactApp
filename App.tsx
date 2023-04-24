@@ -1,11 +1,12 @@
 import React, { useState, useEffect } from 'react';
-import { View, Text, TextInput, Button, FlatList, Image, StyleSheet, TouchableOpacity, Animated, Pressable, Keyboard  } from 'react-native';
+import { LogBox, View, Text, TextInput, Button, FlatList, Image, StyleSheet, TouchableOpacity, Animated, Pressable, Keyboard  } from 'react-native';
 import { QuestionController } from './Question';
 import { Progress } from './ProgressBar';
 
 
 const ChatScreen = () => {
   const messageRef = React.useRef(null);
+  LogBox.ignoreAllLogs(true);
 
   const [messages, setMessages] = useState([
     { author: "RASA", text: 'Hej mit navn er RASA' , me: false },
@@ -93,11 +94,11 @@ const ChatScreen = () => {
 
   useEffect(() => {
     if(currentOption !== null) {
-      setText('Sporgsmål ' +progress + " - " + currentOptionList[currentOption]);
+      setText('Spørgsmål ' +progress + " - " + currentOptionList[currentOption]);
     }
   }, [currentOption]);
 
-  const [progress, setProgress] = useState(24);
+  const [progress, setProgress] = useState(26);
 
   useEffect(() => {
     if(progress > 26) {
@@ -118,24 +119,27 @@ const ChatScreen = () => {
         <View style={styles.progressContainer}>
           <Progress step={progress} steps={49} height={10} />
         </View>
-        <FlatList
-        data={enumerate(currentOptionList)}
-        horizontal = {true}
-        renderItem={({ item }) => (
-          <TouchableOpacity style={currentOption === item.id ? styles.likertButtonStylePressed : styles.likertButtonStyle} onPress={() => {
-            if(currentOption === item.id) {
-              setCurrentOption(null);
-              setText('');
-            } else {
-              setCurrentOption(item.id);
-            }
-          }
-          }>
-            <Text style={styles.textSettingsLikertButton}>{item.element}</Text>
-          </TouchableOpacity>
-        )}
-        keyExtractor={(item, index) => index.toString()}
-      />
+          <FlatList
+          //contentContainerStyle={{flexDirection : "row", flexWrap : "wrap", justifyContent: 'center', alignItems: 'center'}} 
+          horizontal = {true}
+          data={enumerate(currentOptionList)}
+          //numColumns={5}
+          renderItem={({ item }) => (
+            <TouchableOpacity style={currentOption === item.id ? styles.likertButtonStylePressed : styles.likertButtonStyle} onPress={() => {
+              if(currentOption === item.id) {
+                setCurrentOption(null);
+                setText('');
+              } else {
+                setCurrentOption(item.id);
+              }}
+            }>
+              <View style={{flex: 1, justifyContent: 'center',alignItems: 'center'}}>
+                <Text style={styles.textSettingsLikertButton}>{item.element}</Text>
+              </View>
+            </TouchableOpacity>
+          )}
+          keyExtractor={(item, index) => index.toString()}
+        />
       </View>
       <FlatList
         ref={messageRef}
@@ -198,10 +202,10 @@ const styles = StyleSheet.create({ //design of the chat screen
   },
   sendButtonStyle: { 
     backgroundColor: '#F9CA7F',
-    padding: DEFAULT_PADDING,
+    padding: 8,
     borderRadius: 10,
     //flex: 1,
-    width: 120,
+    width: 115,
     height: 50,
     textAlignVertical: 'center',
   },
@@ -209,30 +213,27 @@ const styles = StyleSheet.create({ //design of the chat screen
     backgroundColor: '#F9CA7F',
     borderRadius: 10,
     maxWidth: 78,
-    maxHeight: 100,
     minWidth: 78,
-    justifyContent: 'center',
-    alignContent: 'center',
+    maxHeight: 70,
+    minHeight: 70,
     paddingVertical: 6,
     paddingHorizontal: 6,
     margin: 2,
     marginBottom: 10,
-    flex: 1,
+    
     
   },
   likertButtonStylePressed: { 
     backgroundColor: '#F4B34B',
     borderRadius: 10,
     maxWidth: 78,
-    maxHeight: 100,
     minWidth: 78,
-    justifyContent: 'center',
-    alignContent: 'center',
+    maxHeight: 70,
+    minHeight: 70,
     paddingVertical: 6,
     paddingHorizontal: 6,
     margin: 2,
     marginBottom: 10,
-    flex: 1,
   },
   textSettingsButton: {
     fontWeight: 'bold',
@@ -240,12 +241,14 @@ const styles = StyleSheet.create({ //design of the chat screen
     color: 'black',
     textAlign: 'center',
     textAlignVertical: 'center',
+    fontFamily: 'sans-serif condensed',
   },
   textSettingsLikertButton: {
     fontWeight: 'bold',
     fontSize: 14,
     color: 'black',
     textAlign: 'center',
+    textAlignVertical: 'center',
   },
   textFieldsInputContainer: {
     backgroundColor: '#F3F6F9',
@@ -253,6 +256,7 @@ const styles = StyleSheet.create({ //design of the chat screen
     flexDirection: 'row',
     alignItems: 'center',
     justifyContent: 'space-between',
+    fontFamily: 'sans-serif condensed',
   },
   textFieldsInput: {
     flex: 1, 
