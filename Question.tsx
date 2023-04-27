@@ -53,6 +53,7 @@ export const QuestionController = ({qIndex}) => {{
       "Jeg har følt mig træt det meste af tiden.", //E2
       "Jeg har følt mig træt det meste af tiden.", //E3
       "Jeg har været for træt til at gøre det, jeg gerne ville.", //E4
+      "Spørgeskemaet er slut", //O1
     ];
     
     

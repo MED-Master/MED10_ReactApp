@@ -16,7 +16,9 @@ export const Progress =({step, steps, height}) => {
     }, []);
     
     React.useEffect(() => {
-      reactive.setValue(-width + (width * step) / steps);
+      if (step < 50) {
+        reactive.setValue(-width + (width * step) / steps);
+      }
     }, [step,width]);
   
     return (
@@ -27,7 +29,7 @@ export const Progress =({step, steps, height}) => {
         fontWeight: '800',
         marginBottom: 2,
       }}>
-        {step}/{steps}
+        {step < 50 ? step : step = 49}/{steps}
       </Text>
       <View 
         onLayout={(e) => {
