@@ -29,7 +29,7 @@ export const Progress =({step, steps, height}) => {
         fontWeight: '800',
         marginBottom: 2,
       }}>
-        {step < 50 ? step : step = 49}/{steps}
+        {step < 50 ? step = step : step = 49}/{steps}
       </Text>
       <View 
         onLayout={(e) => {
