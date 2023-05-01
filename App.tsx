@@ -98,7 +98,7 @@ const ChatScreen = () => {
     }
   }, [currentOption]);
 
-  const [progress, setProgress] = useState(48);
+  const [progress, setProgress] = useState(1);
 
   useEffect(() => {
     if(progress > 26) {
