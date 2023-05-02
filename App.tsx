@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { LogBox, View, Text, TextInput, Button, FlatList, Image, StyleSheet, TouchableOpacity, Animated, Pressable, Keyboard  } from 'react-native';
+import { LogBox, View, Text, TextInput, Button, FlatList, Image, StyleSheet, TouchableOpacity, Animated, Pressable, Keyboard } from 'react-native';
 import { QuestionController } from './Question';
 import { Progress } from './ProgressBar';
 
@@ -9,65 +9,65 @@ const ChatScreen = () => {
   LogBox.ignoreAllLogs(true);
 
   const [messages, setMessages] = useState([
-    { author: "RASA", text: 'Hej mit navn er RASA. Jeg er her for at hjælpe dig med at gennemføre spørgeskemaet. Du kan se spørgsmålet i toppen med svarmulighederne under. Du svarer på et spørgsmål ved at vælge en af svarmulighederne og derefter sende den til mig.' , me: false },
-    { author: "RASA", text: 'Hvis du vil have et overblik over mine evner send "evner" til mig.', me: false },
+    { author: "RASA", text: 'Hej mit navn er RASA', me: false },
+    //{ author: "RASA", text: '.', me: false },
     //{ author: "User", text: 'Hi', me: true }
   ]);
-  
+
   const [text, setText] = useState('');
-  
+
   const sendToServer = () => {
     const textToSend = text;
     setText('');
-    fetch('http://10.0.2.2:6969/api', {
+    fetch('http://192.168.0.206:6969/api', {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
       },
       body: JSON.stringify({ message: textToSend }),
     })
-    .then(async (response) => {
-      console.log(response);
-      const res = await response.json()
-      const mesyge = response.ok ? res[0].text : "Error";
+      .then(async (response) => {
+        console.log(response);
+        const res = await response.json()
+        const mesyge = response.ok ? res[0].text : "Error";
 
-      const rasaResponse = response.ok ? res.map((item) => {
-        return { author: "RASA", text: item.text || "", me: false, image: item.image || null };
-      }) : [{ author: "ERROR", text: "RASA: Error", me: false, image: null }];
+        const rasaResponse = response.ok ? res.map((item) => {
+          return { author: "RASA", text: item.text || "", me: false, image: item.image || null };
+        }) : [{ author: "ERROR", text: "RASA: Error", me: false, image: null }];
 
-      setMessages([...messages, { author: "Bruger", text, me: true }, ...rasaResponse]);
-      setText('');
-    })
-    .catch((error) => {
-      console.error('Error:', error);
-    });
+        setMessages([...messages, { author: "Bruger", text, me: true }, ...rasaResponse]);
+        setText('');
+      })
+      .catch((error) => {
+        console.error('Error:', error);
+      });
   };
 
 
   const handleSend = () => {
-    if(text.length === 0) {
+    if (text.length === 0) {
       console.log("Text null");
       return;
     } else {
       sendToServer();
-      if(currentOption !== null) {
+      if (currentOption !== null) {
         setProgress(progress + 1);
         setCurrentOption(null);
       }
-      if(messageRef.current !== null) {
+      if (messageRef.current !== null) {
         messageRef.current?.scrollToEnd({ animated: true });
       }
     };
   };
-  
-  const SSQOLAnswerOptions1 =[
+
+  const SSQOLAnswerOptions1 = [
     "Kunne slet ikke",
     "Meget besvær",
     "En del besvær",
     "Lidt besvær",
     "Intet besvær"
   ];
-  
+
   const SSQOLAnswerOptions2 = [
     "Helt enig",
     "Delvist enig",
@@ -89,23 +89,23 @@ const ChatScreen = () => {
     return result;
   }
 
- 
+
   const [currentOption, setCurrentOption] = useState(null);
 
   useEffect(() => {
-    if(currentOption !== null) {
-      setText('Spørgsmål ' +progress + " - " + currentOptionList[currentOption]);
+    if (currentOption !== null) {
+      setText('Spørgsmål ' + progress + " - " + currentOptionList[currentOption]);
     }
   }, [currentOption]);
 
-  const [progress, setProgress] = useState(48);
+  const [progress, setProgress] = useState(1);
 
   useEffect(() => {
-    if(progress > 26) {
+    if (progress > 26) {
       setCurrentOptionList(SSQOLAnswerOptions2);
     }
   }, [progress]);
-  
+
   const [isPressed, setIsPressed] = useState(false);
 
   function handleToggle() {
@@ -115,25 +115,26 @@ const ChatScreen = () => {
   return (
     <View style={styles.container}>
       <View style={styles.headerContainer}>
-        <QuestionController qIndex={progress}/>
+        <QuestionController qIndex={progress} />
         <View style={styles.progressContainer}>
           <Progress step={progress} steps={49} height={10} />
         </View>
-          <FlatList
-          contentContainerStyle={{flexDirection : "row", flexWrap : "wrap", justifyContent: 'center', alignItems: 'center'}} 
+        <FlatList
+          contentContainerStyle={{ flexDirection: "row", flexWrap: "wrap", justifyContent: 'center', alignItems: 'center' }}
           //horizontal = {true}
           data={enumerate(currentOptionList)}
           //numColumns={5}
           renderItem={({ item }) => (
             <TouchableOpacity style={currentOption === item.id ? styles.likertButtonStylePressed : styles.likertButtonStyle} onPress={() => {
-              if(currentOption === item.id) {
+              if (currentOption === item.id) {
                 setCurrentOption(null);
                 setText('');
               } else {
                 setCurrentOption(item.id);
-              }}
+              }
+            }
             }>
-              <View style={{flex: 1, justifyContent: 'center',alignItems: 'center'}}>
+              <View style={{ flex: 1, justifyContent: 'center', alignItems: 'center' }}>
                 <Text style={styles.textSettingsLikertButton}>{item.element}</Text>
               </View>
             </TouchableOpacity>
@@ -146,18 +147,17 @@ const ChatScreen = () => {
         data={messages}
         renderItem={({ item }) => (
           <View style={item.me ? styles.inputMessage : styles.botMessage}>
-            <Text>{ item.author + ':'}</Text> 
-            { item.image ? <Image source={{ uri: item.image }} style={{ width: 200, height: 200 }} /> : null }
-            { item.text ?
-              <Text style={{fontSize: 14, 
-                color: item.me ? 'black' : '#000' }}>{item.text}</Text> : null
+            <Text>{item.author + ':'}</Text>
+            {item.image ? <Image source={{ uri: item.image }} style={{ width: 200, height: 200 }} /> : null}
+            {item.text ?
+              <Text style={{ fontWeight: 'bold', color: item.me ? 'black' : '#000' }}>{item.text}</Text> : null
             }
           </View>
         )}
         keyExtractor={(item, index) => index.toString()}
         onContentSizeChange={() => messageRef.current.scrollToEnd({ animated: true })}
       />
-      <View style={{borderBottomColor: 'black', borderBottomWidth: 1}}/>
+      <View style={{ borderBottomColor: 'black', borderBottomWidth: 1 }} />
       <View style={styles.textFieldsInputContainer}>
         <TextInput
           style={currentOption !== null && currentOption !== false ? styles.readOnlyField : styles.textFieldsInput}
@@ -201,7 +201,7 @@ const styles = StyleSheet.create({ //design of the chat screen
     //alignItems: 'center',
     justifyContent: 'space-between',
   },
-  sendButtonStyle: { 
+  sendButtonStyle: {
     backgroundColor: '#F9CA7F',
     padding: 8,
     borderRadius: 10,
@@ -210,7 +210,7 @@ const styles = StyleSheet.create({ //design of the chat screen
     height: 50,
     textAlignVertical: 'center',
   },
-  likertButtonStyle: { 
+  likertButtonStyle: {
     backgroundColor: '#F9CA7F',
     borderRadius: 10,
     maxWidth: 72,
@@ -221,10 +221,10 @@ const styles = StyleSheet.create({ //design of the chat screen
     paddingHorizontal: 6,
     margin: 2,
     marginBottom: 10,
-    
-    
+
+
   },
-  likertButtonStylePressed: { 
+  likertButtonStylePressed: {
     backgroundColor: '#F4B34B',
     borderRadius: 10,
     maxWidth: 72,
@@ -260,7 +260,7 @@ const styles = StyleSheet.create({ //design of the chat screen
     fontFamily: 'sans-serif condensed',
   },
   textFieldsInput: {
-    flex: 1, 
+    flex: 1,
     margin: 5,
     //borderWidth: 5,
     //borderColor: '#ccc',
