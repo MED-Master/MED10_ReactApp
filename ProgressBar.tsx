@@ -1,40 +1,41 @@
 import React, { useState, useEffect } from 'react';
 import { View, Text, TextInput, Button, FlatList, Image, StyleSheet, TouchableOpacity, Animated } from 'react-native';
 
-export const Progress =({step, steps, height}) => {
-    const [width, setWidth] = React.useState(0);
-    const animatedValue = React.useRef(new Animated.Value(-1000)).current;
-    const reactive = React.useRef(new Animated.Value(-1000)).current;
-    
-  
-    React.useEffect(() => {
-      Animated.timing(animatedValue, {
-        toValue: reactive,
-        duration: 300,
-        useNativeDriver: true,
-      }).start();
-    }, []);
-    
-    React.useEffect(() => {
-      if (step < 50) {
-        reactive.setValue(-width + (width * step) / steps);
-      }
-    }, [step,width]);
-  
-    return (
-      <>
+export const Progress = ({ step, steps, height }) => {
+  const [width, setWidth] = React.useState(0);
+  const animatedValue = React.useRef(new Animated.Value(-1000)).current;
+  const reactive = React.useRef(new Animated.Value(-1000)).current;
+
+
+  React.useEffect(() => {
+    Animated.timing(animatedValue, {
+      toValue: reactive,
+      duration: 300,
+      useNativeDriver: true,
+    }).start();
+  }, []);
+
+  React.useEffect(() => {
+    if (step < 50) {
+      reactive.setValue(-width + (width * step) / steps);
+    }
+  }, [step, width]);
+
+  return (
+    <>
       <Text style={{
         fontFamily: 'menlo',
         fontSize: 12,
+        color: 'black', // '#FFF
         fontWeight: '800',
         marginBottom: 2,
       }}>
         {step < 50 ? step = step : step = 49}/{steps}
       </Text>
-      <View 
+      <View
         onLayout={(e) => {
           const newWidth = e.nativeEvent.layout.width;
-  
+
           setWidth(newWidth);
         }}
         style={{
@@ -44,7 +45,7 @@ export const Progress =({step, steps, height}) => {
           overflow: 'hidden',
           marginBottom: 8,
         }}>
-        <Animated.View 
+        <Animated.View
           style={{
             height,
             width: '100%',
@@ -56,7 +57,7 @@ export const Progress =({step, steps, height}) => {
             transform: [{ translateX: animatedValue }],
           }} />
       </View>
-      </>
-    ) 
-    
-  }
+    </>
+  )
+
+}

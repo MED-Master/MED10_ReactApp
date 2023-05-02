@@ -1,8 +1,9 @@
 import React, { useState, useEffect } from 'react';
 import { View, Text, TextInput, Button, FlatList, Image, StyleSheet, TouchableOpacity, Animated } from 'react-native';
 
-export const QuestionController = ({qIndex}) => {{
-  
+export const QuestionController = ({ qIndex }) => {
+  {
+
     const SSQOLquestions = [
       "Har De haft besvær med at tilberede et måltid?", //SC1
       "Har De haft besvær med at spise?", //SC2
@@ -55,23 +56,24 @@ export const QuestionController = ({qIndex}) => {{
       "Jeg har været for træt til at gøre det, jeg gerne ville.", //E4
       "Spørgeskemaet er slut", //O1
     ];
-    
-    
-    let questionIndex = qIndex -1;
+
+
+    let questionIndex = qIndex - 1;
     const question = SSQOLquestions[questionIndex];
-    
+
     return (
       <Text style={styles.question}>{question}</Text>
     );
-    
-  }}
- 
-  const styles = StyleSheet.create({ 
-    question: {
-      fontSize: 26,
-      padding: 10,
-      fontWeight: 'bold',
-      textAlign: 'left',
-      color: 'black',
-    },
-    })
+
+  }
+}
+
+const styles = StyleSheet.create({
+  question: {
+    fontSize: 20,
+    padding: 10,
+    fontWeight: 'bold',
+    textAlign: 'left',
+    color: 'black',
+  },
+})

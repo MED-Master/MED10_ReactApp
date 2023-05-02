@@ -8,8 +8,10 @@ const ChatScreen = () => {
   const messageRef = React.useRef(null);
   LogBox.ignoreAllLogs(true);
 
+
   const [messages, setMessages] = useState([
-    { author: "RASA", text: 'Hej mit navn er RASA', me: false },
+    { author: "RASA", text: 'Hej mit navn er RASA. Jeg er her for at hjælpe dig med at gennemføre spørgeskemaet. Du kan se spørgsmålet i toppen med svarmulighederne under. Du svarer på et spørgsmål ved at vælge en af svarmulighederne og derefter sende den til mig.', me: false },
+    { author: "RASA", text: 'Hvis du vil have et overblik over mine evner send "evner" til mig.', me: false },
     //{ author: "RASA", text: '.', me: false },
     //{ author: "User", text: 'Hi', me: true }
   ]);
@@ -19,7 +21,7 @@ const ChatScreen = () => {
   const sendToServer = () => {
     const textToSend = text;
     setText('');
-    fetch('http://192.168.0.206:6969/api', {
+    fetch('http://172.20.10.5:6969/api', {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
@@ -98,7 +100,7 @@ const ChatScreen = () => {
     }
   }, [currentOption]);
 
-  const [progress, setProgress] = useState(1);
+  const [progress, setProgress] = useState(28);
 
   useEffect(() => {
     if (progress > 26) {
@@ -147,10 +149,10 @@ const ChatScreen = () => {
         data={messages}
         renderItem={({ item }) => (
           <View style={item.me ? styles.inputMessage : styles.botMessage}>
-            <Text>{item.author + ':'}</Text>
+            <Text style={{ fontWeight: 'bold', color: 'black' }}>{item.author + ':'}</Text>
             {item.image ? <Image source={{ uri: item.image }} style={{ width: 200, height: 200 }} /> : null}
             {item.text ?
-              <Text style={{ fontWeight: 'bold', color: item.me ? 'black' : '#000' }}>{item.text}</Text> : null
+              <Text style={{ color: item.me ? 'black' : '#000' }}>{item.text}</Text> : null
             }
           </View>
         )}
@@ -161,7 +163,7 @@ const ChatScreen = () => {
       <View style={styles.textFieldsInputContainer}>
         <TextInput
           style={currentOption !== null && currentOption !== false ? styles.readOnlyField : styles.textFieldsInput}
-          placeholder="Skriv en besked..."
+          placeholder="Skriv en besked..." placeholderTextColor={'grey'}
           value={text}
           onChangeText={setText}
           readOnly={currentOption !== null && currentOption !== false}
@@ -206,17 +208,18 @@ const styles = StyleSheet.create({ //design of the chat screen
     padding: 8,
     borderRadius: 10,
     //flex: 1,
-    width: 115,
+    width: 80,
     height: 50,
     textAlignVertical: 'center',
+    textAlign: 'center',
   },
   likertButtonStyle: {
     backgroundColor: '#F9CA7F',
     borderRadius: 10,
-    maxWidth: 72,
-    minWidth: 72,
-    maxHeight: 70,
-    minHeight: 70,
+    maxWidth: 66,
+    minWidth: 66,
+    maxHeight: 82,
+    minHeight: 82,
     paddingVertical: 6,
     paddingHorizontal: 6,
     margin: 2,
@@ -227,10 +230,10 @@ const styles = StyleSheet.create({ //design of the chat screen
   likertButtonStylePressed: {
     backgroundColor: '#F4B34B',
     borderRadius: 10,
-    maxWidth: 72,
-    minWidth: 72,
-    maxHeight: 70,
-    minHeight: 70,
+    maxWidth: 66,
+    minWidth: 66,
+    maxHeight: 82,
+    minHeight: 82,
     paddingVertical: 6,
     paddingHorizontal: 6,
     margin: 2,
@@ -245,8 +248,8 @@ const styles = StyleSheet.create({ //design of the chat screen
     fontFamily: 'sans-serif condensed',
   },
   textSettingsLikertButton: {
-    fontWeight: 'bold',
-    fontSize: 14,
+    //fontWeight: 'bold',
+    fontSize: 13,
     color: 'black',
     textAlign: 'center',
     textAlignVertical: 'center',
@@ -267,7 +270,6 @@ const styles = StyleSheet.create({ //design of the chat screen
     //borderRadius: 10,
     padding: DEFAULT_PADDING,
     fontWeight: 'bold',
-    fontSize: 16,
   },
   readOnlyField: {
     backgroundColor: '#F4B34B',
@@ -275,6 +277,10 @@ const styles = StyleSheet.create({ //design of the chat screen
     borderRadius: 10,
     padding: DEFAULT_PADDING,
     fontWeight: 'bold',
+    maxWidth: 255,
+    minHeight: 50,
+    maxHeight: 100,
+    fontSize: 11,
   },
   inputMessage: {
     backgroundColor: '#AAC3DB',
