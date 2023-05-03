@@ -10,7 +10,8 @@ const ChatScreen = () => {
 
 
   const [messages, setMessages] = useState([
-    { author: "RASA", text: 'Hej mit navn er RASA. Jeg er her for at hjælpe dig med at gennemføre spørgeskemaet. Du kan se spørgsmålet i toppen med svarmulighederne under. Du svarer på et spørgsmål ved at vælge en af svarmulighederne og derefter sende den til mig.', me: false },
+    { author: "RASA", text: 'Hej mit navn er RASA. Jeg er her for at hjælpe dig med at gennemføre SS-QOL spørgeskemaet. Dette spørgeskema er designet til at give en vurdering af helbredsrelateret livskvalitet specifikt for patienter, der har haft et slagtilfælde.', me: false },
+    { author: "RASA", text: 'Du kan se spørgsmålet i toppen med svarmulighederne under. Du svarer på et spørgsmål ved at vælge en af svarmulighederne og derefter sende den til mig.', me: false },
     { author: "RASA", text: 'Hvis du vil have et overblik over mine evner send "evner" til mig.', me: false },
     //{ author: "RASA", text: '.', me: false },
     //{ author: "User", text: 'Hi', me: true }
@@ -100,7 +101,7 @@ const ChatScreen = () => {
     }
   }, [currentOption]);
 
-  const [progress, setProgress] = useState(28);
+  const [progress, setProgress] = useState(1);
 
   useEffect(() => {
     if (progress > 26) {
@@ -270,6 +271,7 @@ const styles = StyleSheet.create({ //design of the chat screen
     //borderRadius: 10,
     padding: DEFAULT_PADDING,
     fontWeight: 'bold',
+    color: 'black',
   },
   readOnlyField: {
     backgroundColor: '#F4B34B',
