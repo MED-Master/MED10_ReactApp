@@ -19,7 +19,11 @@ const ChatScreen = () => {
   const sendToServer = () => {
     const textToSend = text;
     setText('');
+<<<<<<< Updated upstream
     fetch('http://10.0.2.2:6969/api', {
+=======
+    fetch('http://10.0.2.2:5005/webhooks/rest/webhook', {
+>>>>>>> Stashed changes
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
@@ -98,7 +102,7 @@ const ChatScreen = () => {
     }
   }, [currentOption]);
 
-  const [progress, setProgress] = useState(1);
+  const [progress, setProgress] = useState(28);
 
   useEffect(() => {
     if(progress > 26) {
@@ -213,10 +217,17 @@ const styles = StyleSheet.create({ //design of the chat screen
   likertButtonStyle: { 
     backgroundColor: '#F9CA7F',
     borderRadius: 10,
+<<<<<<< Updated upstream
     maxWidth: 72,
     minWidth: 72,
     maxHeight: 70,
     minHeight: 70,
+=======
+    maxWidth: 70,
+    minWidth: 70,
+    maxHeight: 82,
+    minHeight: 82,
+>>>>>>> Stashed changes
     paddingVertical: 6,
     paddingHorizontal: 6,
     margin: 2,
@@ -227,10 +238,17 @@ const styles = StyleSheet.create({ //design of the chat screen
   likertButtonStylePressed: { 
     backgroundColor: '#F4B34B',
     borderRadius: 10,
+<<<<<<< Updated upstream
     maxWidth: 72,
     minWidth: 72,
     maxHeight: 70,
     minHeight: 70,
+=======
+    maxWidth: 70,
+    minWidth: 70,
+    maxHeight: 82,
+    minHeight: 82,
+>>>>>>> Stashed changes
     paddingVertical: 6,
     paddingHorizontal: 6,
     margin: 2,
